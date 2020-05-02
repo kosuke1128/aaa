@@ -1,0 +1,37 @@
+
+d3.json("/map/geodata/japan_prefecture_noisland.topojson", function (data) {
+	var topology = data;
+	var geometries = topology.objects.ken.geometries;
+
+        // データを設定
+	carto.value(function (d) {
+		return pref_data[ d.properties["JIS-CODE"]-1 ];
+	});
+
+        // カルトグラム計算
+	var features = carto(topology, geometries).features;
+
+        // 描画
+	map = map.data(features)
+		.enter()
+		.append("path")
+		.attr("fill", function(d) {
+			return color( pref_data[ d.properties["JIS-CODE"]-1 ] );
+		})
+		.attr({
+			stroke: "#fff",
+			"stroke-width": 1
+		})
+		.attr("d", carto.path);
+});
+
+
+// 2013 みかん収穫量 (農林水産省)
+// http://www.e-stat.go.jp/SG1/estat/Xlsdl.do?sinfid=000024947688
+    var pref_data = [
+	1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,
+	1000,1440,1000,24600,1000,1000,1000,1000,1000,1000,
+	1000,121800,28200,22000,10000,1000,14200,2460,1000,168900,
+	1000,1000,1000,42300,12700,13900,15900,137800,7340,26500,
+	53000,60900,91600,16200,13000,15700,1000
+];
